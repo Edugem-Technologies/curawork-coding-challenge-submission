@@ -43,7 +43,7 @@ function getConnectionsInCommonIds($userId, $suggestionId, &$commonConnectionIds
     getAllNetworkConnectionsById($activeSuggestionConnectionsIdsArr, $activeSuggConnectionRequests, (int)$suggestionId);
 
     if (!empty($activeUserConnectionsIdsArr) && !empty($activeSuggestionConnectionsIdsArr)) {
-        $commonConnectionIds = array_values(array_unique(array_merge($activeUserConnectionsIdsArr, $activeSuggestionConnectionsIdsArr)));
+        $commonConnectionIds = array_values(array_unique(array_intersect($activeUserConnectionsIdsArr, $activeSuggestionConnectionsIdsArr)));
     } elseif (empty($activeUserConnectionsIdsArr)) {
         $commonConnectionIds = $activeSuggestionConnectionsIdsArr;
     } elseif (empty($activeSuggestionConnectionsIdsArr)) {
