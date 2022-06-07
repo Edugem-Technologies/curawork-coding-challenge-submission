@@ -1,61 +1,129 @@
-var skeletonId = 'skeleton';
-var contentId = 'content';
-var skipCounter = 0;
-var takeAmount = 10;
+const skeletonId = 'skeleton';
+const contentId = 'content';
+const skipCounter = 0;
+const lastId = 0;
+const takeAmount = 10;
+const suggestionNavValue = "suggestions";
+const sentRequestNavValue = "sent_requests";
+const receivedRequestNavValue = "received_requests";
+const connectionsNavValue = "connections";
 
 
-function getRequests(mode) {
-  // your code here...
+function getSentRequests(lastId) {
+    let url = '/sent_requests/'+lastId+'/'+takeAmount;
+    ajax(url);
 }
 
-function getMoreRequests(mode) {
-  // Optional: Depends on how you handle the "Load more"-Functionality
-  // your code here...
+function getMoreSentRequests(lastId) {
+    let loaderBtn = '#load_more_btn_parent_'+lastId;
+    let url = '/sent_requests/'+lastId+'/'+takeAmount;
+    ajax(url, 'GET', null, loaderBtn, null, true);
 }
 
-function getConnections() {
-  // your code here...
+function getReceivedRequests(lastId) {
+    let url = '/received_requests/'+lastId+'/'+takeAmount;
+    ajax(url);
 }
 
-function getMoreConnections() {
-  // Optional: Depends on how you handle the "Load more"-Functionality
-  // your code here...
+function getMoreReceivedRequests(lastId) {
+    let loaderBtn = '#load_more_btn_parent_'+lastId;
+    let url = '/received_requests/'+lastId+'/'+takeAmount;
+    ajax(url, 'GET', null, loaderBtn, null, true);
+}
+
+function getConnections(lastId) {
+    let url = '/connections/'+lastId+'/'+takeAmount;
+    ajax(url);
+}
+
+function getMoreConnections(lastId) {
+    let loaderBtn = '#load_more_btn_parent_'+lastId;
+    let url = '/connections/'+lastId+'/'+takeAmount;
+    ajax(url, 'GET', null, loaderBtn, null, true);
 }
 
 function getConnectionsInCommon(userId, connectionId) {
-  // your code here...
+    // your code here...
 }
 
 function getMoreConnectionsInCommon(userId, connectionId) {
-  // Optional: Depends on how you handle the "Load more"-Functionality
-  // your code here...
+    // Optional: Depends on how you handle the "Load more"-Functionality
+    // your code here...
 }
 
-function getSuggestions() {
-  // your code here...
+function getSuggestions(lastId) {
+    let url = '/suggestions/'+lastId+'/'+takeAmount;
+    ajax(url);
 }
 
-function getMoreSuggestions() {
-  // Optional: Depends on how you handle the "Load more"-Functionality
-  // your code here...
+function getMoreSuggestions(lastId) {
+    let loaderBtn = '#load_more_btn_parent_'+lastId;
+    let url = '/suggestions/'+lastId+'/'+takeAmount;
+    ajax(url, 'GET', null, loaderBtn, null, true);
 }
 
 function sendRequest(userId, suggestionId) {
-  // your code here...
+    let formItems = [['userId', userId], ['suggestionId', suggestionId]];
+    let form = ajaxForm(formItems);
+    let url = '/connection_request/store';
+    let removeRecord = '#suggestion_'+suggestionId;
+    ajax(url, 'POST', form, null, removeRecord);
 }
 
 function deleteRequest(userId, requestId) {
-  // your code here...
+    Swal.fire({
+        title: 'Do you want to withdraw the request?',
+        showCancelButton: true,
+        confirmButtonText: 'Withdraw',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let formItems = [['userId', userId], ['requestId', requestId]];
+            let form = ajaxForm(formItems);
+            let url = '/connection_request/destroy';
+            let removeRecord = '#sent_request_'+requestId;
+            ajax(url, 'POST', form, null, removeRecord);
+        }
+    })
 }
 
-function acceptRequest(userId, requestId) {
-  // your code here...
+function acceptRequest(userId, suggestionId) {
+    let formItems = [['userId', userId], ['suggestionId', suggestionId]];
+    let form = ajaxForm(formItems);
+    let url = '/connection_request/update';
+    let removeRecord = '#received_request_'+userId;
+    ajax(url, 'POST', form, null, removeRecord);
 }
 
 function removeConnection(userId, connectionId) {
-  // your code here...
+    Swal.fire({
+        title: 'Do you want to remove connection?',
+        showCancelButton: true,
+        confirmButtonText: 'Remove',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let formItems = [['userId', userId], ['connectionId', connectionId]];
+            let form = ajaxForm(formItems);
+            let url = '/connection/destroy';
+            let removeRecord = '#connection_'+connectionId;
+            ajax(url, 'POST', form, null, removeRecord);
+        }
+    })
 }
 
+
 $(function () {
-  //getSuggestions();
+    $("input[name='btnradio_navigation']").click(function () {
+        let checkedNavigation = $('input:radio[name=btnradio_navigation]:checked').val();
+        if (checkedNavigation === suggestionNavValue) {
+            getSuggestions(lastId);
+        } else if (checkedNavigation === sentRequestNavValue) {
+            getSentRequests(lastId);
+        } else if (checkedNavigation === receivedRequestNavValue) {
+            getReceivedRequests(lastId);
+        } else if (checkedNavigation === connectionsNavValue) {
+            getConnections(lastId);
+        }
+    });
+
+    $('input[name="btnradio_navigation"]:radio:first').click();
 });

@@ -41,4 +41,44 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public static function getAllSuggestions($lastId, $takeAmount, $connectionRequestIds)
+    {
+        return self::whereNotIn('id', $connectionRequestIds)->where('id', '>', $lastId)->take($takeAmount)->get();
+    }
+
+    public static function getLastSuggestion($connectionRequestIds)
+    {
+        return self::whereNotIn('id', $connectionRequestIds)->orderBy('id', 'desc')->first();
+    }
+
+    public static function getAllSentRequest($lastId, $takeAmount, $pendingConnectionRequestIds)
+    {
+        return self::whereIn('id', $pendingConnectionRequestIds)->where('id', '>', $lastId)->take($takeAmount)->get();
+    }
+
+    public static function getLastSentRequest($pendingConnectionRequestIds)
+    {
+        return self::whereIn('id', $pendingConnectionRequestIds)->orderBy('id', 'desc')->first();
+    }
+
+    public static function getAllReceivedRequest($lastId, $takeAmount, $receivedConnectionRequestIds)
+    {
+        return self::whereIn('id', $receivedConnectionRequestIds)->where('id', '>', $lastId)->take($takeAmount)->get();
+    }
+
+    public static function getLastReceivedRequest($receivedConnectionRequestIds)
+    {
+        return self::whereIn('id', $receivedConnectionRequestIds)->orderBy('id', 'desc')->first();
+    }
+
+    public static function getAllConnections($lastId, $takeAmount, $activeConnectionRequestIdsArr)
+    {
+        return self::whereIn('id', $activeConnectionRequestIdsArr)->where('id', '>', $lastId)->take($takeAmount)->get();
+    }
+
+    public static function getLastConnection($activeConnectionRequestIdsArr)
+    {
+        return self::whereIn('id', $activeConnectionRequestIdsArr)->orderBy('id', 'desc')->first();
+    }
 }
