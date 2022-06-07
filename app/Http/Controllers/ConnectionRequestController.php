@@ -12,6 +12,16 @@ use ResponseStatus;
 class ConnectionRequestController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return Response
@@ -130,7 +140,7 @@ class ConnectionRequestController extends Controller
         $requestId = $request->input('requestId');
 
         $deleteConnectionRequest = ConnectionRequest::where('user_id', $userId)
-            ->where('suggestion_id', $requestId)->delete();
+            ->where('suggestion_id', $requestId)->where('status', ConnectionRequestStatus::PENDING)->delete();
 
         if ($deleteConnectionRequest) {
             $success = true;
