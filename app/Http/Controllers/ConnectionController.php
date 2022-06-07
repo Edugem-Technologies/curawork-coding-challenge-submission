@@ -31,23 +31,23 @@ class ConnectionController extends Controller
     public function index($lastId, $takeAmount): JsonResponse
     {
         $userId = Auth::user()->id;
-        $activeConnectionRequestIds = ConnectionRequest::getActiveConnectionRequests($userId);
+        $activeConnectionRequests = ConnectionRequest::getActiveConnectionRequests($userId);
         $activeConnectionRequestIdsArr = [];
-        if (!$activeConnectionRequestIds->isEmpty()) {
-            $userIdArr = $activeConnectionRequestIds->pluck('user_id')->toArray();
-            $suggestionIdArr = $activeConnectionRequestIds->pluck('suggestion_id')->toArray();
-            $activeConnectionRequestIdsArr = array_merge($activeConnectionRequestIdsArr, $userIdArr, $suggestionIdArr);
-            $activeConnectionRequestIdsArr = array_unique($activeConnectionRequestIdsArr);
-            $position = array_search($userId, $activeConnectionRequestIdsArr);
-            array_splice($activeConnectionRequestIdsArr, $position, 1);
-        }
+        getAllNetworkConnectionsById($activeConnectionRequestIdsArr, $activeConnectionRequests, $userId);
 
         $connections = User::getAllConnections($lastId, $takeAmount, $activeConnectionRequestIdsArr);
 
         $endOfRecords = false;
         if (!$connections->isEmpty()) {
-            $lastRecord = $connections->toArray();
-            $lastId = end($lastRecord)['id'];
+            $connections = $connections->map(function ($item, $key) use ($userId) {
+                $commonConnectionIds = [];
+                getConnectionsInCommonIds($userId, $item->id, $commonConnectionIds);
+                $connectionsInCommon = User::getUsersByIds($commonConnectionIds);
+                $item->connection_in_common_count = $connectionsInCommon->count();
+                return $item;
+            });
+
+            $lastId = getLastId($connections);
             $lastConnection = User::getLastConnection($activeConnectionRequestIdsArr);
             if (in_array($lastConnection->id, $connections->pluck('id')->toArray())) {
                 $endOfRecords = true;
@@ -123,30 +123,19 @@ class ConnectionController extends Controller
     public function destroy(Request $request): JsonResponse
     {
         $userId = $request->input('userId');
-        $connectionId = $request->input('connectionId');
+        $suggestionId = $request->input('suggestionId');
 
-        $removeActiveConnection = ConnectionRequest::where([
-                ['user_id', $userId],
-                ['suggestion_id', $connectionId],
-                ['status', ConnectionRequestStatus::ACCEPTED]
-            ])
-            ->orWhere([
-                ['suggestion_id', $userId],
-                ['user_id', $connectionId],
-                ['status', ConnectionRequestStatus::ACCEPTED]
-            ])
-            ->delete();
+        $removeActiveConnection = ConnectionRequest::deleteConnection($userId, $suggestionId,
+            ConnectionRequestStatus::ACCEPTED);
 
+        $success = false;
+        $data = null;
+        $status = ResponseStatus::FAILURE;
+        $message = "Unable to remove connection.";
         if ($removeActiveConnection) {
             $success = true;
-            $data = "";
             $status = ResponseStatus::SUCCESS;
             $message = "Connection removed successfully.";
-        } else {
-            $success = false;
-            $data = "";
-            $status = ResponseStatus::FAILURE;
-            $message = "Unable to remove connection.";
         }
 
         return responseJson($success, $data, $status, $message);

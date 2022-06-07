@@ -15,9 +15,11 @@ function ajaxForm(formItems) {
  * @param loaderBtn
  * @param removeRecord
  * @param isLoadMore
+ * @param contentDivId
  */
 // Modified this function - Added three new columns loaderBtn, removeRecord, isLoadMore.
-function ajax(url, method = 'GET', form = null, loaderBtn = null, removeRecord = null, isLoadMore = false) {
+function ajax(url, method = 'GET', form = null, loaderBtn = null, removeRecord = null,
+              isLoadMore = false, contentDivId = 'content') {
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -37,7 +39,7 @@ function ajax(url, method = 'GET', form = null, loaderBtn = null, removeRecord =
     }
 
     let loader = $(".c-overlay");
-    let selector = $("#content");
+    let selector = $("#"+contentDivId);
 
     $.ajax({
         url: url,
@@ -65,13 +67,13 @@ function ajax(url, method = 'GET', form = null, loaderBtn = null, removeRecord =
                 }
 
                 selector.removeClass('d-none');
-                if (response.data !== "" && isLoadMore) {
+                if (response.data != null && isLoadMore) {
                     selector.append(response.data);
-                } else if (response.data !== "" && !isLoadMore) {
+                } else if (response.data != null && !isLoadMore) {
                     selector.html(response.data);
                 }
 
-                if (response.message !== "") {
+                if (response.message != null) {
                     toastr.success(response.message)
                 }
 
@@ -79,7 +81,7 @@ function ajax(url, method = 'GET', form = null, loaderBtn = null, removeRecord =
                     $(removeRecord).addClass('d-none');
                 }
             } else {
-                if (response.message !== "") {
+                if (response.message != null) {
                     toastr.error(response.message)
                 }
             }

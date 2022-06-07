@@ -42,13 +42,15 @@ function getMoreConnections(lastId) {
     ajax(url, 'GET', null, loaderBtn, null, true);
 }
 
-function getConnectionsInCommon(userId, connectionId) {
-    // your code here...
+function getConnectionsInCommon(suggestionId, lastId, contentDivId) {
+    let url = '/connections_in_common/'+lastId+'/'+takeAmount+'/'+suggestionId;
+    ajax(url, 'GET', null, null, null, false, contentDivId);
 }
 
-function getMoreConnectionsInCommon(userId, connectionId) {
-    // Optional: Depends on how you handle the "Load more"-Functionality
-    // your code here...
+function getMoreConnectionsInCommon(suggestionId, lastId, contentDivId) {
+    let loaderBtn = '#load_more_btn_parent_'+lastId;
+    let url = '/connections_in_common/'+lastId+'/'+takeAmount+'/'+suggestionId;
+    ajax(url, 'GET', null, loaderBtn, null, true, contentDivId);
 }
 
 function getSuggestions(lastId) {
@@ -94,20 +96,28 @@ function acceptRequest(userId, suggestionId) {
     ajax(url, 'POST', form, null, removeRecord);
 }
 
-function removeConnection(userId, connectionId) {
+function removeConnection(userId, suggestionId) {
     Swal.fire({
         title: 'Do you want to remove connection?',
         showCancelButton: true,
         confirmButtonText: 'Remove',
     }).then((result) => {
         if (result.isConfirmed) {
-            let formItems = [['userId', userId], ['connectionId', connectionId]];
+            let formItems = [['userId', userId], ['suggestionId', suggestionId]];
             let form = ajaxForm(formItems);
             let url = '/connection/destroy';
-            let removeRecord = '#connection_'+connectionId;
+            let removeRecord = '#connection_'+suggestionId;
             ajax(url, 'POST', form, null, removeRecord);
         }
     })
+}
+
+function toggleConnectionInCommon(ele, suggestionId) {
+    let isCollapsed = $("#"+ele.id).hasClass("collapsed");
+    if(!isCollapsed) {
+        let contentDivId = 'content_'+suggestionId;
+        getConnectionsInCommon(suggestionId, lastId, contentDivId);
+    }
 }
 
 

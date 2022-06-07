@@ -52,24 +52,23 @@ class ConnectionRequestController extends Controller
         $userId = $request->input('userId');
         $suggestionId = $request->input('suggestionId');
 
-        $connectionRequest = ConnectionRequest::create([
+        $data = [
             'user_id' => $userId,
             'suggestion_id' => $suggestionId,
             'status' => ConnectionRequestStatus::PENDING,
             'created_at' => now(),
             'updated_at' => now(),
-        ]);
+        ];
+        $connectionRequest = ConnectionRequest::createConnectionRequest($data);
 
+        $success = false;
+        $data = null;
+        $status = ResponseStatus::FAILURE;
+        $message = "Unable to send connection request.";
         if ($connectionRequest) {
             $success = true;
-            $data = "";
             $status = ResponseStatus::SUCCESS;
             $message = "Connection request sent successfully.";
-        } else {
-            $success = false;
-            $data = "";
-            $status = ResponseStatus::FAILURE;
-            $message = "Unable to send connection request.";
         }
 
         return responseJson($success, $data, $status, $message);

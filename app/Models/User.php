@@ -81,4 +81,9 @@ class User extends Authenticatable
     {
         return self::whereIn('id', $activeConnectionRequestIdsArr)->orderBy('id', 'desc')->first();
     }
+
+    public static function getUsersByIds($commonConnectionIds)
+    {
+        return self::whereIn('id', $commonConnectionIds)->get();
+    }
 }

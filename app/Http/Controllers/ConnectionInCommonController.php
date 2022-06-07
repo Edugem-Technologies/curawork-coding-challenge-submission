@@ -4,12 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\ConnectionRequest;
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use ResponseStatus;
 
-class ReceivedRequestController extends Controller
+class ConnectionInCommonController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -24,24 +23,26 @@ class ReceivedRequestController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index($lastId, $takeAmount): JsonResponse
+    public function index($lastId, $takeAmount, $suggestionId)
     {
         $userId = Auth::user()->id;
-        $receivedConnectionRequestIds = ConnectionRequest::getReceivedConnectionRequests($userId)->pluck('user_id')->toArray();
-        $receivedRequests = User::getAllReceivedRequest($lastId, $takeAmount, $receivedConnectionRequestIds);
+        $commonConnectionIds = [];
+        getConnectionsInCommonIds($userId, $suggestionId, $commonConnectionIds);
+
+        $connectionsInCommon = User::getAllConnections($lastId, $takeAmount, $commonConnectionIds);
 
         $endOfRecords = false;
-        if (!$receivedRequests->isEmpty()) {
-            $lastId = getLastId($receivedRequests);
-            $lastSentRequest = User::getLastReceivedRequest($receivedConnectionRequestIds);
-            if (in_array($lastSentRequest->id, $receivedRequests->pluck('id')->toArray())) {
+        if (!$connectionsInCommon->isEmpty()) {
+            $lastId = getLastId($connectionsInCommon);
+            $lastConnection = User::getLastConnection($commonConnectionIds);
+            if (in_array($lastConnection->id, $connectionsInCommon->pluck('id')->toArray())) {
                 $endOfRecords = true;
             }
         }
 
-        $returnHTML = view('received_requests', compact('receivedRequests', 'userId', 'lastId', 'endOfRecords'))->render();
+        $returnHTML = view('connections_in_common', compact('connectionsInCommon', 'userId', 'suggestionId', 'lastId', 'endOfRecords'))->render();
 
         return responseJson(true, $returnHTML, ResponseStatus::SUCCESS);
     }

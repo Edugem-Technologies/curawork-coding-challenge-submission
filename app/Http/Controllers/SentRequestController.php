@@ -34,8 +34,7 @@ class SentRequestController extends Controller
 
         $endOfRecords = false;
         if (!$sentRequests->isEmpty()) {
-            $lastRecord = $sentRequests->toArray();
-            $lastId = end($lastRecord)['id'];
+            $lastId = getLastId($sentRequests);
             $lastSentRequest = User::getLastSentRequest($pendingConnectionRequestIds);
             if (in_array($lastSentRequest->id, $sentRequests->pluck('id')->toArray())) {
                 $endOfRecords = true;

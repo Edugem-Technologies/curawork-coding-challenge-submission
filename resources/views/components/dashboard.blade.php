@@ -56,3 +56,13 @@
 
 <button id="accept_request_btn_" class="btn btn-primary me-1"
         onclick="">Accept</button>
+
+
+<div id="connections_in_common_skeletons_{{ $connection->id }}">
+    {{-- Paste the loading skeletons here via Jquery before the ajax to get the connections in common --}}
+</div>
+<div class="d-flex justify-content-center w-100 py-2">
+    <button class="btn btn-sm btn-primary" id="load_more_connections_in_common_{{ $connection->id }}">Load
+        more
+    </button>
+</div>

@@ -57,4 +57,31 @@ class ConnectionRequest extends Model
         return self::where('user_id', $userId)->where('suggestion_id', $suggestionId)
             ->where('status', ConnectionRequestStatus::PENDING)->first();
     }
+
+    public static function getConnectionsByUserId($userId)
+    {
+        return self::where('user_id', $userId)
+            ->where('status', ConnectionRequestStatus::ACCEPTED)
+            ->get();
+    }
+
+    public static function deleteConnection($userId, $suggestionId, $status)
+    {
+        return self::where([
+                ['user_id', $userId],
+                ['suggestion_id', $suggestionId],
+                ['status', $status]
+            ])
+            ->orWhere([
+                ['suggestion_id', $userId],
+                ['user_id', $suggestionId],
+                ['status', $status]
+            ])
+            ->delete();
+    }
+
+    public static function createConnectionRequest($data)
+    {
+        return self::create($data);
+    }
 }
