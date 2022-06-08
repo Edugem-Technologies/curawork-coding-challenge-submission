@@ -28,3 +28,7 @@
 .swal2-confirm {
     background-color: #0d6efd !important;
 }
+
+.swal2-title {
+    font-size: 1.50em !important;
+}
