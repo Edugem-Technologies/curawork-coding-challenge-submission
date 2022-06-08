@@ -38,11 +38,11 @@ class ConnectionController extends Controller
 
         $endOfRecords = false;
         if (!$connections->isEmpty()) {
-            $connections = $connections->map(function ($item, $key) use ($userId) {
-                $commonConnectionIds = [];
-                getConnectionsInCommonIds($userId, $item->id, $commonConnectionIds);
-                $connectionsInCommon = User::getAllConnections($commonConnectionIds);
-                $item->connection_in_common_count = $connectionsInCommon->count();
+            $commonConnectionIds = [];
+            getConnectionsInCommonAllIds($userId, $connections->pluck('id')->toArray(), $commonConnectionIds);
+
+            $connections = $connections->map(function ($item, $key) use ($commonConnectionIds) {
+                $item->connection_in_common_count = count($commonConnectionIds[$item->id]);
                 return $item;
             });
 

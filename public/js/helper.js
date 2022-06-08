@@ -6,21 +6,15 @@ function ajaxForm(formItems) {
     return form;
 }
 
-
 /**
  *
  * @param {*} url route
  * @param {*} method POST or GET
  * @param {*} form for POST request
- * @param loaderBtn
- * @param removeRecord
- * @param isLoadMore
- * @param contentDivId
  * @param {*} functionsOnSuccess Array of functions that should be called after ajax
+ * @param loaderClass Class of loader that loads for each ajax request
  */
-// Modified this function - Added four new columns loaderBtn, removeRecord, isLoadMore, contentDivId.
-function ajax(url, method = 'GET', form = null, loaderBtn = null, removeRecord = null,
-              isLoadMore = false, contentDivId = 'content', functionsOnSuccess = null) {
+function ajax(url, method = 'GET', form = null, functionsOnSuccess = null, loaderClass = '.c-overlay') {
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -31,20 +25,9 @@ function ajax(url, method = 'GET', form = null, loaderBtn = null, removeRecord =
         form = new FormData;
     }
 
-    if (typeof loaderBtn === 'undefined' || loaderBtn === null) {
-        loaderBtn = false;
-    }
-
-    if (typeof removeRecord === 'undefined' || removeRecord === null) {
-        removeRecord = false;
-    }
-
     if (typeof functionsOnSuccess === 'undefined' || functionsOnSuccess === null) {
         functionsOnSuccess = [];
     }
-
-    let loader = $(".c-overlay");
-    let selector = $("#"+contentDivId);
 
     $.ajax({
         url: url,
@@ -55,35 +38,21 @@ function ajax(url, method = 'GET', form = null, loaderBtn = null, removeRecord =
         contentType: false,
         dataType: 'json',
         beforeSend: function () {
-            loader.show()
+            $(loaderClass).show()
         },
         error: function (xhr, textStatus, error) {
+            $(loaderClass).hide()
             console.log(xhr.responseText);
             console.log(xhr.statusText);
             console.log(textStatus);
             console.log(error);
-            loader.hide()
+            toastr.error('Something went wrong.')
         },
         success: function (response) {
-            loader.hide()
+            $(loaderClass).hide()
             if (response.success) {
-                if (loaderBtn) {
-                    $(loaderBtn).addClass('d-none');
-                }
-
-                selector.removeClass('d-none');
-                if (functionsOnSuccess.length === 0 && response.data != null && isLoadMore) {
-                    selector.append(response.data);
-                } else if (functionsOnSuccess.length === 0 && response.data != null && !isLoadMore) {
-                    selector.html(response.data);
-                }
-
                 if (response.message != null) {
                     toastr.success(response.message)
-                }
-
-                if (removeRecord) {
-                    $(removeRecord).addClass('d-none');
                 }
 
                 for (let j = 0; j < functionsOnSuccess.length; j++) {
@@ -102,7 +71,6 @@ function ajax(url, method = 'GET', form = null, loaderBtn = null, removeRecord =
         }
     });
 }
-
 
 function exampleUseOfAjaxFunction(exampleVariable) {
     // show skeletons

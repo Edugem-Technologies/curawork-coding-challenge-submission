@@ -1,13 +1,14 @@
 <?php
 
 use App\Models\ConnectionRequest;
-use App\Models\User;
 
+// Function to send response data in json format.
 function responseJson($success = true, $data = null, $status = 200, $message = null): \Illuminate\Http\JsonResponse
 {
     return response()->json(array('success' => $success, 'data'=>$data, 'message' => $message), $status);
 }
 
+// Function to filter all active network connections for a user.
 function getAllNetworkConnectionsById(&$activeConnectionIdsArr, $activeConnectionRequests, $userId): void
 {
     if (!$activeConnectionRequests->isEmpty()) {
@@ -19,6 +20,7 @@ function getAllNetworkConnectionsById(&$activeConnectionIdsArr, $activeConnectio
     }
 }
 
+// Function to remove specific element from an array.
 function removeElementFromArray(&$array, $element): void
 {
     $position = array_search($element, $array);
@@ -27,12 +29,14 @@ function removeElementFromArray(&$array, $element): void
     }
 }
 
+// Function to get last id from the current set of records. Used for pagination.
 function getLastId($result)
 {
     $lastRecord = $result->toArray();
     return end($lastRecord)['id'];
 }
 
+// Function to filter connections in common for two given users.
 function getConnectionsInCommonIds($userId, $suggestionId, &$commonConnectionIds): void
 {
     $activeUserConnectionRequests = ConnectionRequest::getActiveConnectionRequests($userId);
@@ -56,6 +60,36 @@ function getConnectionsInCommonIds($userId, $suggestionId, &$commonConnectionIds
     }
 }
 
+function getConnectionsInCommonAllIds($userId, $suggestionIdsArr, &$commonConnectionIds): void
+{
+    $activeUserConnectionRequests = ConnectionRequest::getActiveConnectionRequests($userId);
+    $activeUserConnectionsIdsArr = [];
+    getAllNetworkConnectionsById($activeUserConnectionsIdsArr, $activeUserConnectionRequests, $userId);
+
+    $activeSuggConnectionRequestsAll = ConnectionRequest::getActiveConnectionRequestsAllIds($suggestionIdsArr);
+
+    foreach($activeSuggConnectionRequestsAll as $singleSuggestion) {
+        $activeSuggestionConnectionsIdsArr = explode(",", $singleSuggestion->connection_ids);
+
+        $commonConnectionIdsTemp = [];
+        if (!empty($activeUserConnectionsIdsArr) && !empty($activeSuggestionConnectionsIdsArr)) {
+            $commonConnectionIdsTemp = array_values(array_unique(array_intersect($activeUserConnectionsIdsArr, $activeSuggestionConnectionsIdsArr)));
+        } elseif (empty($activeUserConnectionsIdsArr)) {
+            $commonConnectionIdsTemp = $activeSuggestionConnectionsIdsArr;
+        } elseif (empty($activeSuggestionConnectionsIdsArr)) {
+            $commonConnectionIdsTemp = $activeUserConnectionsIdsArr;
+        }
+
+        if (!empty($commonConnectionIdsTemp)) {
+            removeElementFromArray($commonConnectionIdsTemp, $userId);
+            removeElementFromArray($commonConnectionIdsTemp, $singleSuggestion->suggestion_id);
+        }
+
+        $commonConnectionIds[$singleSuggestion->suggestion_id] = $commonConnectionIdsTemp;
+    }
+}
+
+// Function to filter suggestion ids for a user.
 function getSuggIdsForSuggestionListing(&$connectionRequestIdsArr, $userId): void
 {
     $connectionRequestIds = ConnectionRequest::getAllConnectionRequests($userId);

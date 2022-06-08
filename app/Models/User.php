@@ -46,75 +46,75 @@ class User extends Authenticatable
     {
         $result = self::whereNotIn('id', $connectionRequestIds);
 
-        if (!is_null($lastId)) {
-            $result = $result->where('id', '>', $lastId);
+        if (!is_null($lastId) && $lastId >= 1) {
+            $result = $result->where('id', '<', $lastId);
         }
         if (!is_null($limit)) {
             $result = $result->take($limit);
         }
 
-        return $result->get();
+        return $result->orderBy('id', 'desc')->get();
     }
 
     public static function getLastSuggestion($connectionRequestIds)
     {
-        return self::whereNotIn('id', $connectionRequestIds)->orderBy('id', 'desc')->first();
+        return self::whereNotIn('id', $connectionRequestIds)->orderBy('id', 'asc')->first();
     }
 
     public static function getAllSentRequest($pendingConnectionRequestIds, $lastId = null, $limit = null)
     {
         $result = self::whereIn('id', $pendingConnectionRequestIds);
 
-        if (!is_null($lastId)) {
-            $result = $result->where('id', '>', $lastId);
+        if (!is_null($lastId) && $lastId >= 1) {
+            $result = $result->where('id', '<', $lastId);
         }
         if (!is_null($limit)) {
             $result = $result->take($limit);
         }
 
-        return $result->get();
+        return $result->orderBy('id', 'desc')->get();
     }
 
     public static function getLastSentRequest($pendingConnectionRequestIds)
     {
-        return self::whereIn('id', $pendingConnectionRequestIds)->orderBy('id', 'desc')->first();
+        return self::whereIn('id', $pendingConnectionRequestIds)->orderBy('id', 'asc')->first();
     }
 
     public static function getAllReceivedRequest($receivedConnectionRequestIds, $lastId = null, $limit = null)
     {
         $result = self::whereIn('id', $receivedConnectionRequestIds);
 
-        if (!is_null($lastId)) {
-            $result = $result->where('id', '>', $lastId);
+        if (!is_null($lastId) && $lastId >= 1) {
+            $result = $result->where('id', '<', $lastId);
         }
         if (!is_null($limit)) {
             $result = $result->take($limit);
         }
 
-        return $result->get();
+        return $result->orderBy('id', 'desc')->get();
     }
 
     public static function getLastReceivedRequest($receivedConnectionRequestIds)
     {
-        return self::whereIn('id', $receivedConnectionRequestIds)->orderBy('id', 'desc')->first();
+        return self::whereIn('id', $receivedConnectionRequestIds)->orderBy('id', 'asc')->first();
     }
 
     public static function getAllConnections($activeConnectionRequestIdsArr, $lastId = null, $limit = null)
     {
         $result = self::whereIn('id', $activeConnectionRequestIdsArr);
 
-        if (!is_null($lastId)) {
-            $result = $result->where('id', '>', $lastId);
+        if (!is_null($lastId) && $lastId >= 1) {
+            $result = $result->where('id', '<', $lastId);
         }
         if (!is_null($limit)) {
             $result = $result->take($limit);
         }
 
-        return $result->get();
+        return $result->orderBy('id', 'desc')->get();
     }
 
     public static function getLastConnection($activeConnectionRequestIdsArr)
     {
-        return self::whereIn('id', $activeConnectionRequestIdsArr)->orderBy('id', 'desc')->first();
+        return self::whereIn('id', $activeConnectionRequestIdsArr)->orderBy('id', 'asc')->first();
     }
 }
