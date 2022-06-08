@@ -1,8 +1,9 @@
 const skeletonId = 'skeleton';
 const contentId = 'content';
 const skipCounter = 0;
-const lastId = 0;
 const takeAmount = 10;
+const lastId = 0;
+const limit = 10;
 const suggestionNavValue = "suggestions";
 const sentRequestNavValue = "sent_requests";
 const receivedRequestNavValue = "received_requests";
@@ -10,64 +11,64 @@ const connectionsNavValue = "connections";
 
 
 function getSentRequests(lastId) {
-    let url = '/sent_requests/'+lastId+'/'+takeAmount;
+    let url = '/sent-requests/'+lastId+'/'+limit;
     ajax(url);
 }
 
 function getMoreSentRequests(lastId) {
     let loaderBtn = '#load_more_btn_parent_'+lastId;
-    let url = '/sent_requests/'+lastId+'/'+takeAmount;
+    let url = '/sent-requests/'+lastId+'/'+limit;
     ajax(url, 'GET', null, loaderBtn, null, true);
 }
 
 function getReceivedRequests(lastId) {
-    let url = '/received_requests/'+lastId+'/'+takeAmount;
+    let url = '/received-requests/'+lastId+'/'+limit;
     ajax(url);
 }
 
 function getMoreReceivedRequests(lastId) {
     let loaderBtn = '#load_more_btn_parent_'+lastId;
-    let url = '/received_requests/'+lastId+'/'+takeAmount;
+    let url = '/received-requests/'+lastId+'/'+limit;
     ajax(url, 'GET', null, loaderBtn, null, true);
 }
 
 function getConnections(lastId) {
-    let url = '/connections/'+lastId+'/'+takeAmount;
+    let url = '/connections/'+lastId+'/'+limit;
     ajax(url);
 }
 
 function getMoreConnections(lastId) {
     let loaderBtn = '#load_more_btn_parent_'+lastId;
-    let url = '/connections/'+lastId+'/'+takeAmount;
+    let url = '/connections/'+lastId+'/'+limit;
     ajax(url, 'GET', null, loaderBtn, null, true);
 }
 
 function getConnectionsInCommon(suggestionId, lastId, contentDivId) {
-    let url = '/connections_in_common/'+lastId+'/'+takeAmount+'/'+suggestionId;
+    let url = '/connections-in-common/'+lastId+'/'+limit+'/'+suggestionId;
     ajax(url, 'GET', null, null, null, false, contentDivId);
 }
 
 function getMoreConnectionsInCommon(suggestionId, lastId, contentDivId) {
     let loaderBtn = '#load_more_btn_parent_'+lastId;
-    let url = '/connections_in_common/'+lastId+'/'+takeAmount+'/'+suggestionId;
+    let url = '/connections-in-common/'+lastId+'/'+limit+'/'+suggestionId;
     ajax(url, 'GET', null, loaderBtn, null, true, contentDivId);
 }
 
 function getSuggestions(lastId) {
-    let url = '/suggestions/'+lastId+'/'+takeAmount;
+    let url = '/suggestions/'+lastId+'/'+limit;
     ajax(url);
 }
 
 function getMoreSuggestions(lastId) {
     let loaderBtn = '#load_more_btn_parent_'+lastId;
-    let url = '/suggestions/'+lastId+'/'+takeAmount;
+    let url = '/suggestions/'+lastId+'/'+limit;
     ajax(url, 'GET', null, loaderBtn, null, true);
 }
 
 function sendRequest(userId, suggestionId) {
     let formItems = [['userId', userId], ['suggestionId', suggestionId]];
     let form = ajaxForm(formItems);
-    let url = '/connection_request/store';
+    let url = '/connection-request/store';
     let removeRecord = '#suggestion_'+suggestionId;
     ajax(url, 'POST', form, null, removeRecord);
 }
@@ -81,7 +82,7 @@ function deleteRequest(userId, requestId) {
         if (result.isConfirmed) {
             let formItems = [['userId', userId], ['requestId', requestId]];
             let form = ajaxForm(formItems);
-            let url = '/connection_request/destroy';
+            let url = '/connection-request/destroy';
             let removeRecord = '#sent_request_'+requestId;
             ajax(url, 'POST', form, null, removeRecord);
         }
@@ -91,7 +92,7 @@ function deleteRequest(userId, requestId) {
 function acceptRequest(userId, suggestionId) {
     let formItems = [['userId', userId], ['suggestionId', suggestionId]];
     let form = ajaxForm(formItems);
-    let url = '/connection_request/update';
+    let url = '/connection-request/update';
     let removeRecord = '#received_request_'+userId;
     ajax(url, 'POST', form, null, removeRecord);
 }

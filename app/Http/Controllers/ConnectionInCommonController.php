@@ -25,13 +25,13 @@ class ConnectionInCommonController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index($lastId, $takeAmount, $suggestionId)
+    public function index($lastId, $limit, $suggestionId)
     {
         $userId = Auth::user()->id;
         $commonConnectionIds = [];
         getConnectionsInCommonIds($userId, $suggestionId, $commonConnectionIds);
 
-        $connectionsInCommon = User::getAllConnections($lastId, $takeAmount, $commonConnectionIds);
+        $connectionsInCommon = User::getAllConnections($lastId, $limit, $commonConnectionIds);
 
         $endOfRecords = false;
         if (!$connectionsInCommon->isEmpty()) {

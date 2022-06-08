@@ -15,13 +15,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::get('/suggestions/{lastId}/{takeAmount}', [SuggestionController::class, 'index'])->name('suggestions');
-Route::get('/sent_requests/{lastId}/{takeAmount}', [SentRequestController::class, 'index'])->name('sent_requests');
-Route::get('/received_requests/{lastId}/{takeAmount}', [ReceivedRequestController::class, 'index'])->name('received_requests');
-Route::get('/connections/{lastId}/{takeAmount}', [ConnectionController::class, 'index'])->name('connections');
-Route::get('/connections_in_common/{lastId}/{takeAmount}/{suggestionId}', [ConnectionInCommonController::class, 'index'])->name('connections');
+Route::get('/suggestions/{lastId}/{limit}', [SuggestionController::class, 'index'])->name('suggestions');
+Route::get('/sent-requests/{lastId}/{limit}', [SentRequestController::class, 'index'])->name('sent-requests');
+Route::get('/received-requests/{lastId}/{limit}', [ReceivedRequestController::class, 'index'])->name('received-requests');
+Route::get('/connections/{lastId}/{limit}', [ConnectionController::class, 'index'])->name('connections');
+Route::get('/connections-in-common/{lastId}/{limit}/{suggestionId}', [ConnectionInCommonController::class, 'index'])->name('connections');
 
-Route::post('/connection_request/store', [ConnectionRequestController::class, 'store'])->name('connection_request.store');
-Route::post('/connection_request/update', [ConnectionRequestController::class, 'update'])->name('connection_request.update');
-Route::post('/connection_request/destroy', [ConnectionRequestController::class, 'destroy'])->name('connection_request.destroy');
+Route::post('/connection-request/store', [ConnectionRequestController::class, 'store'])->name('connection-request.store');
+Route::post('/connection-request/update', [ConnectionRequestController::class, 'update'])->name('connection-request.update');
+Route::post('/connection-request/destroy', [ConnectionRequestController::class, 'destroy'])->name('connection-request.destroy');
 Route::post('/connection/destroy', [ConnectionController::class, 'destroy'])->name('connection.destroy');

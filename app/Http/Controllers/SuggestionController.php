@@ -26,7 +26,7 @@ class SuggestionController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index($lastId, $takeAmount): \Illuminate\Http\JsonResponse
+    public function index($lastId, $limit): \Illuminate\Http\JsonResponse
     {
         $userId = Auth::user()->id;
         $connectionRequestIds = ConnectionRequest::getAllConnectionRequests($userId);
@@ -38,7 +38,7 @@ class SuggestionController extends Controller
             $connectionRequestIdsArr = array_unique($connectionRequestIdsArr);
         }
 
-        $suggestions = User::getAllSuggestions($lastId, $takeAmount, $connectionRequestIdsArr);
+        $suggestions = User::getAllSuggestions($lastId, $limit, $connectionRequestIdsArr);
 
         $endOfRecords = false;
         if (!$suggestions->isEmpty()) {

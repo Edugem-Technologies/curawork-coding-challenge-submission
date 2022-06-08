@@ -26,11 +26,11 @@ class SentRequestController extends Controller
      *
      * @return JsonResponse
      */
-    public function index($lastId, $takeAmount): JsonResponse
+    public function index($lastId, $limit): JsonResponse
     {
         $userId = Auth::user()->id;
         $pendingConnectionRequestIds = ConnectionRequest::getPendingConnectionRequests($userId)->pluck('suggestion_id')->toArray();
-        $sentRequests = User::getAllSentRequest($lastId, $takeAmount, $pendingConnectionRequestIds);
+        $sentRequests = User::getAllSentRequest($lastId, $limit, $pendingConnectionRequestIds);
 
         $endOfRecords = false;
         if (!$sentRequests->isEmpty()) {

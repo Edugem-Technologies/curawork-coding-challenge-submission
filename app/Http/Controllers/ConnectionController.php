@@ -28,14 +28,14 @@ class ConnectionController extends Controller
      *
      * @return JsonResponse
      */
-    public function index($lastId, $takeAmount): JsonResponse
+    public function index($lastId, $limit): JsonResponse
     {
         $userId = Auth::user()->id;
         $activeConnectionRequests = ConnectionRequest::getActiveConnectionRequests($userId);
         $activeConnectionRequestIdsArr = [];
         getAllNetworkConnectionsById($activeConnectionRequestIdsArr, $activeConnectionRequests, $userId);
 
-        $connections = User::getAllConnections($lastId, $takeAmount, $activeConnectionRequestIdsArr);
+        $connections = User::getAllConnections($lastId, $limit, $activeConnectionRequestIdsArr);
 
         $endOfRecords = false;
         if (!$connections->isEmpty()) {

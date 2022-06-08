@@ -26,11 +26,11 @@ class ReceivedRequestController extends Controller
      *
      * @return JsonResponse
      */
-    public function index($lastId, $takeAmount): JsonResponse
+    public function index($lastId, $limit): JsonResponse
     {
         $userId = Auth::user()->id;
         $receivedConnectionRequestIds = ConnectionRequest::getReceivedConnectionRequests($userId)->pluck('user_id')->toArray();
-        $receivedRequests = User::getAllReceivedRequest($lastId, $takeAmount, $receivedConnectionRequestIds);
+        $receivedRequests = User::getAllReceivedRequest($lastId, $limit, $receivedConnectionRequestIds);
 
         $endOfRecords = false;
         if (!$receivedRequests->isEmpty()) {

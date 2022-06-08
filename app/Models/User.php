@@ -42,9 +42,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public static function getAllSuggestions($lastId, $takeAmount, $connectionRequestIds)
+    public static function getAllSuggestions($lastId, $limit, $connectionRequestIds)
     {
-        return self::whereNotIn('id', $connectionRequestIds)->where('id', '>', $lastId)->take($takeAmount)->get();
+        return self::whereNotIn('id', $connectionRequestIds)->where('id', '>', $lastId)->take($limit)->get();
     }
 
     public static function getLastSuggestion($connectionRequestIds)
@@ -52,9 +52,9 @@ class User extends Authenticatable
         return self::whereNotIn('id', $connectionRequestIds)->orderBy('id', 'desc')->first();
     }
 
-    public static function getAllSentRequest($lastId, $takeAmount, $pendingConnectionRequestIds)
+    public static function getAllSentRequest($lastId, $limit, $pendingConnectionRequestIds)
     {
-        return self::whereIn('id', $pendingConnectionRequestIds)->where('id', '>', $lastId)->take($takeAmount)->get();
+        return self::whereIn('id', $pendingConnectionRequestIds)->where('id', '>', $lastId)->take($limit)->get();
     }
 
     public static function getLastSentRequest($pendingConnectionRequestIds)
@@ -62,9 +62,9 @@ class User extends Authenticatable
         return self::whereIn('id', $pendingConnectionRequestIds)->orderBy('id', 'desc')->first();
     }
 
-    public static function getAllReceivedRequest($lastId, $takeAmount, $receivedConnectionRequestIds)
+    public static function getAllReceivedRequest($lastId, $limit, $receivedConnectionRequestIds)
     {
-        return self::whereIn('id', $receivedConnectionRequestIds)->where('id', '>', $lastId)->take($takeAmount)->get();
+        return self::whereIn('id', $receivedConnectionRequestIds)->where('id', '>', $lastId)->take($limit)->get();
     }
 
     public static function getLastReceivedRequest($receivedConnectionRequestIds)
@@ -72,9 +72,9 @@ class User extends Authenticatable
         return self::whereIn('id', $receivedConnectionRequestIds)->orderBy('id', 'desc')->first();
     }
 
-    public static function getAllConnections($lastId, $takeAmount, $activeConnectionRequestIdsArr)
+    public static function getAllConnections($lastId, $limit, $activeConnectionRequestIdsArr)
     {
-        return self::whereIn('id', $activeConnectionRequestIdsArr)->where('id', '>', $lastId)->take($takeAmount)->get();
+        return self::whereIn('id', $activeConnectionRequestIdsArr)->where('id', '>', $lastId)->take($limit)->get();
     }
 
     public static function getLastConnection($activeConnectionRequestIdsArr)
