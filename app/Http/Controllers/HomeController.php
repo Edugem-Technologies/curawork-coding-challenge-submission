@@ -65,6 +65,6 @@ class HomeController extends Controller
             'connectionCounter' => $connectionCounter,
         ];
 
-        return responseJson(true, $data, $status, null);
+        return responseJson(true, $data, $status);
     }
 }

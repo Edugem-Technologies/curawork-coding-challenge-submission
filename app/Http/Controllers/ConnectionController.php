@@ -73,7 +73,6 @@ class ConnectionController extends Controller
             ConnectionRequestStatus::ACCEPTED);
 
         $success = false;
-        $data = null;
         $status = ResponseStatus::FAILURE;
         $message = "Unable to remove connection.";
         if ($removeActiveConnection) {
@@ -82,6 +81,6 @@ class ConnectionController extends Controller
             $message = "Connection removed successfully.";
         }
 
-        return responseJson($success, $data, $status, $message);
+        return responseJson($success, null, $status, $message);
     }
 }

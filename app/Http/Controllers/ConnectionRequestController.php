@@ -41,7 +41,6 @@ class ConnectionRequestController extends Controller
         $connectionRequest = ConnectionRequest::createConnectionRequest($data);
 
         $success = false;
-        $data = null;
         $status = ResponseStatus::FAILURE;
         $message = "Unable to send connection request.";
         if ($connectionRequest) {
@@ -50,7 +49,7 @@ class ConnectionRequestController extends Controller
             $message = "Connection request sent successfully.";
         }
 
-        return responseJson($success, $data, $status, $message);
+        return responseJson($success, null, $status, $message);
     }
 
     /**
@@ -66,22 +65,19 @@ class ConnectionRequestController extends Controller
 
         $connectionRequest = ConnectionRequest::getByUserIDAndSuggID($userId, $suggestionId);
 
+        $success = false;
+        $status = ResponseStatus::FAILURE;
+        $message = "Unable to accept connection request.";
         if (!is_null($connectionRequest)) {
             $connectionRequest->status = ConnectionRequestStatus::ACCEPTED;
             $connectionRequest->updated_at = now();
             $connectionRequest->save();
             $success = true;
-            $data = "";
             $status = ResponseStatus::SUCCESS;
             $message = "Connection request accepted successfully.";
-        } else {
-            $success = false;
-            $data = "";
-            $status = ResponseStatus::FAILURE;
-            $message = "Unable to accept connection request.";
         }
 
-        return responseJson($success, $data, $status, $message);
+        return responseJson($success, null, $status, $message);
     }
 
     /**
@@ -98,18 +94,15 @@ class ConnectionRequestController extends Controller
         $deleteConnectionRequest = ConnectionRequest::where('user_id', $userId)
             ->where('suggestion_id', $requestId)->where('status', ConnectionRequestStatus::PENDING)->delete();
 
+        $success = false;
+        $status = ResponseStatus::FAILURE;
+        $message = "Unable to withdraw connection request.";
         if ($deleteConnectionRequest) {
             $success = true;
-            $data = "";
             $status = ResponseStatus::SUCCESS;
             $message = "Connection request withdraw successfully.";
-        } else {
-            $success = false;
-            $data = "";
-            $status = ResponseStatus::FAILURE;
-            $message = "Unable to withdraw connection request.";
         }
 
-        return responseJson($success, $data, $status, $message);
+        return responseJson($success, null, $status, $message);
     }
 }
