@@ -2,10 +2,10 @@
 
 <div class="row justify-content-center mt-5">
     <div class="col-12">
-        <div class="card shadow  text-white bg-dark">
+        <div class="card shadow text-white bg-dark">
             <div class="card-header">Network Connections</div>
             <div class="card-body">
-                <div class="btn-group w-100 mb-3" role="group" aria-label="Basic radio toggle button group">
+                <div class="d-flex justify-content-between flex-wrap btn-group w-100 mb-3" role="group" aria-label="Basic radio toggle button group">
                     <input type="radio" class="btn-check" name="btnradio_navigation" id="btnradio_suggestions"
                            autocomplete="off" value="suggestions" checked>
                     <label class="btn btn-outline-primary" for="btnradio_suggestions" id="get_suggestions_btn">Suggestions

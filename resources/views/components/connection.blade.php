@@ -1,20 +1,17 @@
 <div class="my-2 shadow text-white bg-dark p-1" id="connection_{{ $connection->id }}">
-    <div class="d-flex justify-content-between">
-        <table class="ms-1">
-            <td class="align-middle">{{ $connection->name }}</td>
-            <td class="align-middle"> -</td>
-            <td class="align-middle">{{ $connection->email }}</td>
-            <td class="align-middle">
-        </table>
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
         <div>
+            {{ $connection->name }} - {{ $connection->email }}
+        </div>
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
             <button style="width: 220px" id="get_connections_in_common_{{ $connection->id }}"
-                    class="btn btn-primary @if ($connection->connection_in_common_count == 0) disabled @endif" type="button"
+                    class="btn btn-primary mt-2 @if ($connection->connection_in_common_count == 0) disabled @endif" type="button"
                     data-bs-toggle="collapse" data-bs-target="#collapse_{{ $connection->id }}" aria-expanded="false"
                     onclick="return toggleConnectionInCommon(this, {{ $connection->id }})"
                     aria-controls="collapseExample">
                 Connections in common ({{ $connection->connection_in_common_count ?? 0 }})
-            </button>
-            <button id="remove_connection_btn_{{ $connection->id }}" class="btn btn-danger me-1"
+            </button>&nbsp;
+            <button id="remove_connection_btn_{{ $connection->id }}" class="btn btn-danger me-1 mt-2"
                     onclick="return removeConnection({{ $userId }}, {{ $connection->id }})">
                 Remove Connection
             </button>
