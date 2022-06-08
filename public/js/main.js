@@ -70,7 +70,12 @@ function sendRequest(userId, suggestionId) {
     let form = ajaxForm(formItems);
     let url = '/connection-request/store';
     let removeRecord = '#suggestion_'+suggestionId;
-    ajax(url, 'POST', form, null, removeRecord);
+
+    let functionsOnSuccess = [
+        [getNavigationCounts, []]
+    ];
+
+    ajax(url, 'POST', form, null, removeRecord, null, null, functionsOnSuccess);
 }
 
 function deleteRequest(userId, requestId) {
@@ -84,7 +89,10 @@ function deleteRequest(userId, requestId) {
             let form = ajaxForm(formItems);
             let url = '/connection-request/destroy';
             let removeRecord = '#sent_request_'+requestId;
-            ajax(url, 'POST', form, null, removeRecord);
+            let functionsOnSuccess = [
+                [getNavigationCounts, []]
+            ];
+            ajax(url, 'POST', form, null, removeRecord, null, null, functionsOnSuccess);
         }
     })
 }
@@ -94,7 +102,10 @@ function acceptRequest(userId, suggestionId) {
     let form = ajaxForm(formItems);
     let url = '/connection-request/update';
     let removeRecord = '#received_request_'+userId;
-    ajax(url, 'POST', form, null, removeRecord);
+    let functionsOnSuccess = [
+        [getNavigationCounts, []]
+    ];
+    ajax(url, 'POST', form, null, removeRecord, null, null, functionsOnSuccess);
 }
 
 function removeConnection(userId, suggestionId) {
@@ -108,7 +119,11 @@ function removeConnection(userId, suggestionId) {
             let form = ajaxForm(formItems);
             let url = '/connection/destroy';
             let removeRecord = '#connection_'+suggestionId;
-            ajax(url, 'POST', form, null, removeRecord);
+            let functionsOnSuccess = [
+                [getConnections, [lastId]],
+                [getNavigationCounts, []]
+            ];
+            ajax(url, 'POST', form, null, removeRecord, null, null, functionsOnSuccess);
         }
     })
 }
@@ -119,6 +134,21 @@ function toggleConnectionInCommon(ele, suggestionId) {
         let contentDivId = 'content_'+suggestionId;
         getConnectionsInCommon(suggestionId, lastId, contentDivId);
     }
+}
+
+function getNavigationCounts() {
+    let url = '/navigation-counts';
+    let functionsOnSuccess = [
+        [setNavigationCounts, ['response']]
+    ];
+    ajax(url, 'GET', null, null, null, null, null, functionsOnSuccess);
+}
+
+function setNavigationCounts(response) {
+    $("#suggestion_counter").html(response.data.suggestionCounter);
+    $("#sent_request_counter").html(response.data.sentRequestCounter);
+    $("#received_request_counter").html(response.data.receivedRequestCounter);
+    $("#connection_counter").html(response.data.connectionCounter);
 }
 
 
@@ -137,4 +167,6 @@ $(function () {
     });
 
     $('input[name="btnradio_navigation"]:radio:first').click();
+
+    getNavigationCounts();
 });

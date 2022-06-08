@@ -9,23 +9,23 @@
                     <input type="radio" class="btn-check" name="btnradio_navigation" id="btnradio_suggestions"
                            autocomplete="off" value="suggestions" checked>
                     <label class="btn btn-outline-primary" for="btnradio_suggestions" id="get_suggestions_btn">Suggestions
-                        ()</label>
+                        (<span id="suggestion_counter"></span>)</label>
 
                     <input type="radio" class="btn-check" name="btnradio_navigation" id="btnradio_sent_requests"
                            autocomplete="off" value="sent_requests">
                     <label class="btn btn-outline-primary" for="btnradio_sent_requests" id="get_sent_requests_btn">Sent
-                        Requests ()</label>
+                        Requests (<span id="sent_request_counter"></span>)</label>
 
                     <input type="radio" class="btn-check" name="btnradio_navigation" id="btnradio_received_requests"
                            autocomplete="off" value="received_requests">
                     <label class="btn btn-outline-primary" for="btnradio_received_requests"
                            id="get_received_requests_btn">Received
-                        Requests()</label>
+                        Requests(<span id="received_request_counter"></span>)</label>
 
                     <input type="radio" class="btn-check" name="btnradio_navigation" id="btnradio_connections" autocomplete="off"
                            value="connections">
                     <label class="btn btn-outline-primary" for="btnradio_connections" id="get_connections_btn">Connections
-                        ()</label>
+                        (<span id="connection_counter"></span>)</label>
                 </div>
                 <hr>
 

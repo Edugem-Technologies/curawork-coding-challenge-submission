@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ConnectionRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -29,16 +28,11 @@ class SuggestionController extends Controller
     public function index($lastId, $limit): \Illuminate\Http\JsonResponse
     {
         $userId = Auth::user()->id;
-        $connectionRequestIds = ConnectionRequest::getAllConnectionRequests($userId);
-        $connectionRequestIdsArr = [$userId];
-        if (!$connectionRequestIds->isEmpty()) {
-            $userIdArr = $connectionRequestIds->pluck('user_id')->toArray();
-            $suggestionIdArr = $connectionRequestIds->pluck('suggestion_id')->toArray();
-            $connectionRequestIdsArr = array_merge($connectionRequestIdsArr, $userIdArr, $suggestionIdArr);
-            $connectionRequestIdsArr = array_unique($connectionRequestIdsArr);
-        }
 
-        $suggestions = User::getAllSuggestions($lastId, $limit, $connectionRequestIdsArr);
+        $connectionRequestIdsArr = [$userId];
+        getSuggIdsForSuggestionListing($connectionRequestIdsArr, $userId);
+
+        $suggestions = User::getAllSuggestions($connectionRequestIdsArr, $lastId, $limit);
 
         $endOfRecords = false;
         if (!$suggestions->isEmpty()) {

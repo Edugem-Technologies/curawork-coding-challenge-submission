@@ -42,9 +42,18 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public static function getAllSuggestions($lastId, $limit, $connectionRequestIds)
+    public static function getAllSuggestions($connectionRequestIds, $lastId = null, $limit = null)
     {
-        return self::whereNotIn('id', $connectionRequestIds)->where('id', '>', $lastId)->take($limit)->get();
+        $result = self::whereNotIn('id', $connectionRequestIds);
+
+        if (!is_null($lastId)) {
+            $result = $result->where('id', '>', $lastId);
+        }
+        if (!is_null($limit)) {
+            $result = $result->take($limit);
+        }
+
+        return $result->get();
     }
 
     public static function getLastSuggestion($connectionRequestIds)
@@ -52,9 +61,18 @@ class User extends Authenticatable
         return self::whereNotIn('id', $connectionRequestIds)->orderBy('id', 'desc')->first();
     }
 
-    public static function getAllSentRequest($lastId, $limit, $pendingConnectionRequestIds)
+    public static function getAllSentRequest($pendingConnectionRequestIds, $lastId = null, $limit = null)
     {
-        return self::whereIn('id', $pendingConnectionRequestIds)->where('id', '>', $lastId)->take($limit)->get();
+        $result = self::whereIn('id', $pendingConnectionRequestIds);
+
+        if (!is_null($lastId)) {
+            $result = $result->where('id', '>', $lastId);
+        }
+        if (!is_null($limit)) {
+            $result = $result->take($limit);
+        }
+
+        return $result->get();
     }
 
     public static function getLastSentRequest($pendingConnectionRequestIds)
@@ -62,9 +80,18 @@ class User extends Authenticatable
         return self::whereIn('id', $pendingConnectionRequestIds)->orderBy('id', 'desc')->first();
     }
 
-    public static function getAllReceivedRequest($lastId, $limit, $receivedConnectionRequestIds)
+    public static function getAllReceivedRequest($receivedConnectionRequestIds, $lastId = null, $limit = null)
     {
-        return self::whereIn('id', $receivedConnectionRequestIds)->where('id', '>', $lastId)->take($limit)->get();
+        $result = self::whereIn('id', $receivedConnectionRequestIds);
+
+        if (!is_null($lastId)) {
+            $result = $result->where('id', '>', $lastId);
+        }
+        if (!is_null($limit)) {
+            $result = $result->take($limit);
+        }
+
+        return $result->get();
     }
 
     public static function getLastReceivedRequest($receivedConnectionRequestIds)
@@ -72,18 +99,22 @@ class User extends Authenticatable
         return self::whereIn('id', $receivedConnectionRequestIds)->orderBy('id', 'desc')->first();
     }
 
-    public static function getAllConnections($lastId, $limit, $activeConnectionRequestIdsArr)
+    public static function getAllConnections($activeConnectionRequestIdsArr, $lastId = null, $limit = null)
     {
-        return self::whereIn('id', $activeConnectionRequestIdsArr)->where('id', '>', $lastId)->take($limit)->get();
+        $result = self::whereIn('id', $activeConnectionRequestIdsArr);
+
+        if (!is_null($lastId)) {
+            $result = $result->where('id', '>', $lastId);
+        }
+        if (!is_null($limit)) {
+            $result = $result->take($limit);
+        }
+
+        return $result->get();
     }
 
     public static function getLastConnection($activeConnectionRequestIdsArr)
     {
         return self::whereIn('id', $activeConnectionRequestIdsArr)->orderBy('id', 'desc')->first();
-    }
-
-    public static function getUsersByIds($commonConnectionIds)
-    {
-        return self::whereIn('id', $commonConnectionIds)->get();
     }
 }

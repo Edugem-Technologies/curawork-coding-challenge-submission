@@ -7,7 +7,6 @@ use App\Models\User;
 use ConnectionRequestStatus;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use ResponseStatus;
 
@@ -35,14 +34,14 @@ class ConnectionController extends Controller
         $activeConnectionRequestIdsArr = [];
         getAllNetworkConnectionsById($activeConnectionRequestIdsArr, $activeConnectionRequests, $userId);
 
-        $connections = User::getAllConnections($lastId, $limit, $activeConnectionRequestIdsArr);
+        $connections = User::getAllConnections($activeConnectionRequestIdsArr, $lastId, $limit);
 
         $endOfRecords = false;
         if (!$connections->isEmpty()) {
             $connections = $connections->map(function ($item, $key) use ($userId) {
                 $commonConnectionIds = [];
                 getConnectionsInCommonIds($userId, $item->id, $commonConnectionIds);
-                $connectionsInCommon = User::getUsersByIds($commonConnectionIds);
+                $connectionsInCommon = User::getAllConnections($commonConnectionIds);
                 $item->connection_in_common_count = $connectionsInCommon->count();
                 return $item;
             });
@@ -57,61 +56,6 @@ class ConnectionController extends Controller
         $returnHTML = view('connections', compact('connections', 'userId', 'lastId', 'endOfRecords'))->render();
 
         return responseJson(true, $returnHTML, ResponseStatus::SUCCESS);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
     }
 
     /**

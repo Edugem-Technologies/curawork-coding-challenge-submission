@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ConnectionRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -31,7 +30,7 @@ class ConnectionInCommonController extends Controller
         $commonConnectionIds = [];
         getConnectionsInCommonIds($userId, $suggestionId, $commonConnectionIds);
 
-        $connectionsInCommon = User::getAllConnections($lastId, $limit, $commonConnectionIds);
+        $connectionsInCommon = User::getAllConnections($commonConnectionIds, $lastId, $limit);
 
         $endOfRecords = false;
         if (!$connectionsInCommon->isEmpty()) {

@@ -16,10 +16,11 @@ function ajaxForm(formItems) {
  * @param removeRecord
  * @param isLoadMore
  * @param contentDivId
+ * @param {*} functionsOnSuccess Array of functions that should be called after ajax
  */
-// Modified this function - Added three new columns loaderBtn, removeRecord, isLoadMore.
+// Modified this function - Added four new columns loaderBtn, removeRecord, isLoadMore, contentDivId.
 function ajax(url, method = 'GET', form = null, loaderBtn = null, removeRecord = null,
-              isLoadMore = false, contentDivId = 'content') {
+              isLoadMore = false, contentDivId = 'content', functionsOnSuccess = null) {
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -36,6 +37,10 @@ function ajax(url, method = 'GET', form = null, loaderBtn = null, removeRecord =
 
     if (typeof removeRecord === 'undefined' || removeRecord === null) {
         removeRecord = false;
+    }
+
+    if (typeof functionsOnSuccess === 'undefined' || functionsOnSuccess === null) {
+        functionsOnSuccess = [];
     }
 
     let loader = $(".c-overlay");
@@ -67,9 +72,9 @@ function ajax(url, method = 'GET', form = null, loaderBtn = null, removeRecord =
                 }
 
                 selector.removeClass('d-none');
-                if (response.data != null && isLoadMore) {
+                if (functionsOnSuccess.length === 0 && response.data != null && isLoadMore) {
                     selector.append(response.data);
-                } else if (response.data != null && !isLoadMore) {
+                } else if (functionsOnSuccess.length === 0 && response.data != null && !isLoadMore) {
                     selector.html(response.data);
                 }
 
@@ -79,6 +84,15 @@ function ajax(url, method = 'GET', form = null, loaderBtn = null, removeRecord =
 
                 if (removeRecord) {
                     $(removeRecord).addClass('d-none');
+                }
+
+                for (let j = 0; j < functionsOnSuccess.length; j++) {
+                    for (let i = 0; i < functionsOnSuccess[j][1].length; i++) {
+                        if (functionsOnSuccess[j][1][i] === "response") {
+                            functionsOnSuccess[j][1][i] = response;
+                        }
+                    }
+                    functionsOnSuccess[j][0].apply(this, functionsOnSuccess[j][1]);
                 }
             } else {
                 if (response.message != null) {

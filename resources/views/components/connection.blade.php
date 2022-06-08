@@ -7,7 +7,8 @@
             <td class="align-middle">
         </table>
         <div>
-            <button style="width: 220px" id="get_connections_in_common_{{ $connection->id }}" class="btn btn-primary" type="button"
+            <button style="width: 220px" id="get_connections_in_common_{{ $connection->id }}"
+                    class="btn btn-primary @if ($connection->connection_in_common_count == 0) disabled @endif" type="button"
                     data-bs-toggle="collapse" data-bs-target="#collapse_{{ $connection->id }}" aria-expanded="false"
                     onclick="return toggleConnectionInCommon(this, {{ $connection->id }})"
                     aria-controls="collapseExample">

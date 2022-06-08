@@ -55,3 +55,14 @@ function getConnectionsInCommonIds($userId, $suggestionId, &$commonConnectionIds
         removeElementFromArray($commonConnectionIds, (int)$suggestionId);
     }
 }
+
+function getSuggIdsForSuggestionListing(&$connectionRequestIdsArr, $userId): void
+{
+    $connectionRequestIds = ConnectionRequest::getAllConnectionRequests($userId);
+    if (!$connectionRequestIds->isEmpty()) {
+        $userIdArr = $connectionRequestIds->pluck('user_id')->toArray();
+        $suggestionIdArr = $connectionRequestIds->pluck('suggestion_id')->toArray();
+        $connectionRequestIdsArr = array_merge($connectionRequestIdsArr, $userIdArr, $suggestionIdArr);
+        $connectionRequestIdsArr = array_unique($connectionRequestIdsArr);
+    }
+}
