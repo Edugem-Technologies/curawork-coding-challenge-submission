@@ -10,4 +10,12 @@ final class ConnectionRequestStatus
 {
     const PENDING = "PENDING";
     const ACCEPTED = "ACCEPTED";
+
+    public static function getAllConnectionRequestStatus(): array
+    {
+        return [
+            self::PENDING,
+            self::ACCEPTED
+        ];
+    }
 }

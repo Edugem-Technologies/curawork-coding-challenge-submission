@@ -18,8 +18,6 @@
         </div>
     </div>
     <div class="collapse" id="collapse_{{ $connection->id }}">
-        <div id="content_{{ $connection->id }}" class="p-2">
-            {{-- Display data here --}}
-        </div>
+        <div id="content_{{ $connection->id }}" class="p-2"></div>
     </div>
 </div>

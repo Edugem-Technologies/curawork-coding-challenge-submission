@@ -211,7 +211,9 @@ function toggleConnectionInCommon(ele, suggestionId) {
     let isCollapsed = $("#"+ele.id).hasClass("collapsed");
     if(!isCollapsed) {
         let contentDivId = '#content_'+suggestionId;
-        getConnectionsInCommon(suggestionId, lastId, contentDivId);
+        if ($(contentDivId).is(':empty')){
+            getConnectionsInCommon(suggestionId, lastId, contentDivId);
+        }
     }
 }
 

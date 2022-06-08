@@ -96,4 +96,16 @@ class ConnectionRequest extends Model
     {
         return self::create($data);
     }
+
+    public static function getByIds($userId, $suggestionId)
+    {
+        return self::where([
+                ['user_id', $userId],
+                ['suggestion_id', $suggestionId]
+            ])
+            ->orWhere([
+                ['suggestion_id', $userId],
+                ['user_id', $suggestionId]
+            ])->first();
+    }
 }
